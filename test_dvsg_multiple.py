@@ -10,6 +10,8 @@ from spikingjelly.datasets import play_frame
 import argparse
 from datetime import timedelta
 
+print(torch.cuda.is_available())
+
 def integrate_events_segment_to_frame(x: np.ndarray, y: np.ndarray, p: np.ndarray, H: int, W: int, j_l: int = 0, j_r: int = -1) -> np.ndarray:
     frame = np.zeros(shape=[2, H * W])
     x = x[j_l: j_r].astype(int)  # avoid overflow
@@ -35,6 +37,7 @@ def main():
                         help='resume from the checkpoint path')
     parser.add_argument('-channels', default=128, type=int, help='channels of CSNN')
     parser.add_argument('-device', default='cuda:0', help='device')
+    # parser.add_argument('-device', default='cpu', help='device')
 
     args = parser.parse_args()
     
@@ -101,10 +104,10 @@ def main():
                 break
 
             # Noise filtering for each batch of events
-            resolution = (128, 128)
-            filter = dv.noise.BackgroundActivityNoiseFilter(resolution, backgroundActivityDuration=timedelta(milliseconds=1)) # 1 millisecond activity period
-            filter.accept(events) # Pass events to the filter
-            events = filter.generateEvents() # Call generate events to apply the noise filter
+            # resolution = (128, 128)
+            # filter = dv.noise.BackgroundActivityNoiseFilter(resolution, backgroundActivityDuration=timedelta(milliseconds=1)) # 1 millisecond activity period
+            # filter.accept(events) # Pass events to the filter
+            # events = filter.generateEvents() # Call generate events to apply the noise filter
             
             slicer.accept(events)
 
