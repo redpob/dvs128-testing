@@ -10,8 +10,6 @@ from spikingjelly.datasets import play_frame
 import argparse
 from datetime import timedelta
 
-print(torch.cuda.is_available())
-
 def integrate_events_segment_to_frame(x: np.ndarray, y: np.ndarray, p: np.ndarray, H: int, W: int, j_l: int = 0, j_r: int = -1) -> np.ndarray:
     frame = np.zeros(shape=[2, H * W])
     x = x[j_l: j_r].astype(int)  # avoid overflow
@@ -122,7 +120,8 @@ def main():
 
         videos.append(video)
 
-    labels = np.array([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
+    # labels = np.array([1, 1, 1, 1, 1])
+    labels = np.ones(15, dtype=int)
 
     test_data = zip(videos, labels)
 
@@ -159,6 +158,7 @@ def main():
             # print(f"out_fr: {out_fr}")
             # print(f"label.numel(): {label.numel()}")
             print(f"Label: {out_fr.argmax(1)[0]}, out_fr: {[round(elem, 3) for elem in out_fr.tolist()[0]]}")
+            # print(f"Label: {out_fr.argmax(1)[0]}, out_fr: {out_fr}")
         # compute average loss and accuracy
     test_loss /= test_samples
     test_acc /= test_samples
